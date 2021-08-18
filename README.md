@@ -16,7 +16,6 @@ conda env create -f snakemake.yml
 ```
 
 # Quick start
-```
 ## Activate snakemake enviroment
 ```
 source ~/.bashrc
