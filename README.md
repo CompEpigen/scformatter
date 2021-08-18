@@ -22,5 +22,7 @@ source ~/.bashrc
 conda activate snakemake
 ```
 
-# Run SCBridge
-
+## Run SCBridge
+```
+python scbridge.py -h
+```
