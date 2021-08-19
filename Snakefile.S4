@@ -3,12 +3,12 @@ rule S4toH5AD:
         script = "scripts/S4toH5AD.R",
         object = "rawdata/seurat4"
     output:
-        h5ad = "procdata/h5ad"
+        h5ad = directory("procdata/h5ad")
     container:
         "docker://satijalab/seurat:4.0.1"
     shell:
         """
         mkdir -p logs
-		Rscript {input.script} {input.object} {output.h5ad} > logs/S4toH5AD.Rout 2>&1
+	Rscript {input.script} {input.object} {output.h5ad} > logs/S4toH5AD.Rout 2>&1
         """
 

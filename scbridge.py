@@ -28,15 +28,21 @@ def main():
         
         # check output folder
         if not outf:
-            getSyncLog("User did not specfify output folder. Please find the output files in {0}/procdata".format(cwd))
+            getSyncLog("User did not specfify output folder. The output files will be generated at {0}/procdata".format(cwd))
             outf = cwd
 
-        if (trans == 'S4toH5AD'):
-            cmd = shlex.split("cp {0}/*.rds {1}/rawdata/seurat4".format(inf, cwd))
-            print(cmd)
-            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            process
-            getSyncLog("Find files")
+        if trans == 'S4toH5AD':
+            getSyncLog("Find files at {0}".format(inf))
+            os.system("ls {0}/*.rds".format(inf))
+            #cpu = os.system("ls {0}/*.rds|wc -l".format(inf))
+            os.system("cp {0}/*.rds {1}/rawdata/seurat4".format(inf, cwd))
+
+            getSyncLog("Transformating Seurat4 object to Scanpy H5AD object...")
+            cmd = shlex.split("snakemake --use-singularity --cores 1 -s Snakefile.S4")
+            #print(cmd)
+            subprocess.Popen(cmd).wait()
+            if not outf == cwd:
+                os.system("mv {0}/procdata/h5ad/* {1}".format(cwd, outf))
                 
     except KeyboardInterrupt:
         sys.stderr.write("User interrupted me!\n")
