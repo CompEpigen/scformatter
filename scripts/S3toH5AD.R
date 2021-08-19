@@ -5,7 +5,7 @@ library(dplyr)
 library(data.table)
 
 args <- commandArgs(trailingOnly = TRUE)
-#args = c("rawdata/seurat4", "procdata/h5ad")
+#args = c("rawdata/seurat3", "procdata/h5ad")
 dir.create(args[2], showWarnings = FALSE)
 dir.create('tmp', showWarnings = FALSE)
 

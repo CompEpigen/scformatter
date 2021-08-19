@@ -6,7 +6,7 @@ library(data.table)
 
 getwd()
 args <- commandArgs(trailingOnly = TRUE)
-#args = c("rawdata/seurat3", "procdata/seurat4")
+#args = c("rawdata/seurat2", "procdata/seurat3")
 dir.create(args[2], showWarnings = FALSE)
 
 move <- function(from, to) {

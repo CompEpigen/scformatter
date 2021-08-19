@@ -11,7 +11,7 @@ def getSyncLog(infoStr):
 
 def main():
     cwd = os.getcwd()
-    TYPES = ['S4toH5AD']
+    TYPES = ['S3toH5AD', 'S2toS3']
     
     try:
         parser = argparse.ArgumentParser(description="""single cell dataset parser""")
@@ -33,20 +33,37 @@ def main():
             getSyncLog("User did not specfify output folder. The output files will be generated at {0}/procdata".format(cwd))
             outf = cwd
 
-        if trans == 'S4toH5AD':
+        if trans == 'S3toH5AD':
             getSyncLog("Find files at {0}".format(inf))
-            os.system("ls {0}/*.rds".format(inf))
+            os.system("ls {0}/*".format(inf))
             #cpu = os.system("ls {0}/*.rds|wc -l".format(inf)) #multi-threads
-            os.system("cp {0}/*.rds {1}/rawdata/seurat4".format(inf, cwd))
+            os.system("cp {0}/* {1}/rawdata/seurat3".format(inf, cwd))
 
             getSyncLog("Transformating Seurat4 object to Scanpy H5AD object...")
-            cmd = shlex.split("snakemake --use-singularity --cores 1 -s {0}/Snakefiles/Snakefile.S4".format(cwd))
+            cmd = shlex.split("snakemake --use-singularity --cores 1 -s {0}/Snakefiles/Snakefile.S3 S3toH5AD".format(cwd))
             #print(cmd)
             subprocess.Popen(cmd).wait()
             if not outf == cwd:
                 os.system("mv {0}/procdata/h5ad/* {1}".format(cwd, outf))
-            os.system("rm {0}/rawdata/seurat4/*.rds".format(cwd))
-            os.system("rm -r {0}/procdata/h5ad".format(cwd))
+                os.system("rm -r {0}/procdata/h5ad".format(cwd))
+            #clean files
+            os.system("rm {0}/rawdata/seurat3/*".format(cwd))
+        elif trans == 'S2toS3':
+            getSyncLog("Find files at {0}".format(inf))
+            os.system("ls {0}/*".format(inf))
+            #cpu = os.system("ls {0}/*.rds|wc -l".format(inf)) #multi-threads
+            os.system("cp {0}/* {1}/rawdata/seurat2".format(inf, cwd))
+
+            getSyncLog("Transformating Seurat3 object to Seurat4 object...")
+            cmd = shlex.split("snakemake --use-singularity --cores 1 -s {0}/Snakefiles/Snakefile.S3 S2toS3".format(cwd))
+            #print(cmd)
+            subprocess.Popen(cmd).wait()
+            if not outf == cwd:
+                os.system("mv {0}/procdata/seurat3/* {1}".format(cwd, outf))
+                os.system("rm -r {0}/procdata/seurat3".format(cwd))
+            #clean files
+            os.system("rm {0}/rawdata/seurat2/*".format(cwd))
+
                 
     except KeyboardInterrupt:
         sys.stderr.write("User interrupted me!\n")
