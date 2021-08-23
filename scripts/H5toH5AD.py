@@ -1,0 +1,71 @@
+import argparse
+import os, sys
+import time
+
+import shlex
+import subprocess
+
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import glob
+import re
+
+
+def getSyncLog(infoStr):
+    os.system('echo "[%s] %s"' % (time.strftime('%H:%M:%S'), infoStr))
+
+def load_data(sample):
+    adata = sc.read_10x_h5(sample)
+    adata.var_names_make_unique()
+    return adata
+
+def main():
+    cwd = os.getcwd()
+    
+    try:
+        parser = argparse.ArgumentParser(description="""10XH5 parser""")
+        parser.add_argument('-i', dest='input_folder', type=str, required = True, help='input_folder')
+        parser.add_argument('-o', dest='output_folder', type=str, required = False, help='output_folder')
+        parser.add_argument('-n', dest='name', type=str, required=True, help='prefix of the output file name')
+        parser.add_argument('-e', dest='each_file', action="store_true", default=False, help='This option should be given or not. Add this option means to parse the files one by one, not integrate them into a single output file.')
+        
+        args = parser.parse_args()
+        inf, outf, name, each = args.input_folder, args.output_folder, args.name, args.each_file
+        # check input folder
+        if not inf:
+            getSyncLog("Please specify the folder that stores the input files")
+            sys.exit(1)
+        # check output folder
+        if not outf:
+            getSyncLog("User did not specfify output folder. The output files will be generated at {0}/procdata".format(cwd))
+            outf = cwd
+
+        if not os.path.exists(outf):
+            os.makedirs(outf)
+        
+        getSyncLog('Collect file list under the input folder: {0}'.format(inf))
+        infiles = list()
+        for f in os.listdir(inf):
+            if f.endswith(".h5") or f.endswith(".H5"):
+                infiles.append(os.path.join(inf, f))
+                if each:
+                    getSyncLog('Transforming data format for each file...')
+                    print(os.path.join(inf, f))
+                    eachadata = load_data(os.path.join(inf, f))
+                    f = re.sub(r'\.[hH]5', '', f)
+                    eachadata.write(os.path.join(outf, ''.join([name, '_', f, '.h5ad'])))
+        if not each:
+            getSyncLog('Integrating all files and transforming data format...')
+            adatas = [load_data(filename) for filename in infiles]
+            adata = adatas[0].concatenate(adatas[1:])
+            adata.write(os.path.join(outf, ''.join([name, '.h5ad'])))
+            getSyncLog('Finished. Please find the output at {0}'.format(os.path.join(outf, ''.join([name, '.h5ad']))))
+                
+                
+    except KeyboardInterrupt:
+        sys.stderr.write("User interrupted me!\n")
+        sys.exit(0)
+
+if __name__ == '__main__':
+    main()

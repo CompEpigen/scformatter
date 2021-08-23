@@ -1,0 +1,14 @@
+rule H5toH5AD:
+    input:
+        script = "scripts/H5toH5AD.py",
+        files = "rawdata/h5"
+    output:
+        h5ad = directory("procdata/h5ad")
+    container:
+        "docker://gcfntnu/scanpy:1.7.0"
+    shell:
+        """
+        mkdir -p logs
+	python {input.script} -i {input.files} -o {output.h5ad} -n integrated > logs/H5toH5AD.PYTHONout 2>&1
+        """
+
