@@ -11,7 +11,7 @@ def getSyncLog(infoStr):
 
 def main():
     cwd = os.getcwd()
-    TYPES = ['S3toH5AD', 'S2toS3']
+    TYPES = ['S3toH5AD', 'S2toS3', 'H5toH5AD']
     
     try:
         parser = argparse.ArgumentParser(description="""single cell dataset parser""")
@@ -23,7 +23,7 @@ def main():
         inf, outf, trans = args.input_folder, args.output_folder, args.transform_type
         # check whether the transformation type is supported.
         if not trans in TYPES:
-            getSyncLog("The function for transforming {0} is not supported. Please select from {1}".format(trans, TYPES))
+            getSyncLog("The function for {0} transformation is not supported for now. Please select from {1} or submit a git issue for requesting new function.".format(trans, TYPES))
             sys.exit(1)
         # check input folder
         if not inf:
@@ -39,30 +39,47 @@ def main():
             #cpu = os.system("ls {0}/*.rds|wc -l".format(inf)) #multi-threads
             os.system("cp {0}/* {1}/rawdata/seurat3".format(inf, cwd))
 
-            getSyncLog("Transformating Seurat4 object to Scanpy H5AD object...")
+            getSyncLog("Transformating Seurat3 object to Scanpy H5AD object...")
             cmd = shlex.split("snakemake --use-singularity --cores 1 -s {0}/Snakefiles/Snakefile.S3 S3toH5AD".format(cwd))
             #print(cmd)
             subprocess.Popen(cmd).wait()
-            if not outf == cwd:
+            if not os.path.abspath(outf) == os.path.join(cwd,"procdata/h5ad"):
                 os.system("mv {0}/procdata/h5ad/* {1}".format(cwd, outf))
                 os.system("rm -r {0}/procdata/h5ad".format(cwd))
             #clean files
-            os.system("rm {0}/rawdata/seurat3/*".format(cwd))
+           # os.system("rm {0}/rawdata/seurat3/*".format(cwd))
+
         elif trans == 'S2toS3':
             getSyncLog("Find files at {0}".format(inf))
             os.system("ls {0}/*".format(inf))
             #cpu = os.system("ls {0}/*.rds|wc -l".format(inf)) #multi-threads
             os.system("cp {0}/* {1}/rawdata/seurat2".format(inf, cwd))
 
-            getSyncLog("Transformating Seurat3 object to Seurat4 object...")
+            getSyncLog("Transformating Seurat2 object to Seurat3 object...")
             cmd = shlex.split("snakemake --use-singularity --cores 1 -s {0}/Snakefiles/Snakefile.S3 S2toS3".format(cwd))
             #print(cmd)
             subprocess.Popen(cmd).wait()
-            if not outf == cwd:
+            if not os.path.abspath(outf) == os.path.join(cwd,"procdata/h5ad"):
                 os.system("mv {0}/procdata/seurat3/* {1}".format(cwd, outf))
                 os.system("rm -r {0}/procdata/seurat3".format(cwd))
             #clean files
-            os.system("rm {0}/rawdata/seurat2/*".format(cwd))
+            #os.system("rm {0}/rawdata/seurat2/*".format(cwd))
+
+        elif trans == 'H5toH5AD':
+            getSyncLog("Find files at {0}".format(inf))
+            os.system("ls {0}/*".format(inf))
+            #cpu = os.system("ls {0}/*.rds|wc -l".format(inf)) #multi-threads
+            os.system("cp {0}/* {1}/rawdata/h5".format(inf, cwd))
+
+            getSyncLog("Transformating 10X H5 file to Scanpy H5AD object...")
+            cmd = shlex.split("snakemake --use-singularity --cores 1 -s {0}/Snakefiles/Snakefile.H5 H5toH5AD".format(cwd))
+            #print(cmd)
+            subprocess.Popen(cmd).wait()
+            if not os.path.abspath(outf) == os.path.join(cwd,"procdata/h5ad"):
+                os.system("mv {0}/procdata/h5ad/* {1}".format(cwd, outf))
+                os.system("rm -r {0}/procdata/h5ad".format(cwd))
+            #clean files
+            # os.system("rm {0}/rawdata/seurat3/*".format(cwd))
 
                 
     except KeyboardInterrupt:
