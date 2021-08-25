@@ -25,6 +25,7 @@ rule S3toH5AD:
         mkdir -p logs
 	Rscript {input.script} {input.object} {output.h5ad} > logs/S3toH5AD.Rout 2>&1
         """
+
 rule S2toS3:
     input:
         script = "scripts/S2toS3.R",
