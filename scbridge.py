@@ -12,11 +12,6 @@ TRANSMAP = {'S2': 'seurat2','S3': 'seurat3', 'H5AD': 'h5ad', 'H5':'h5'}
 def getSyncLog(infoStr):
     os.system('echo "[%s] %s"' % (time.strftime('%H:%M:%S'), infoStr))
 
-transtype="S3toH5AD"
-inf='tmp'
-cwd='tmp2'
-outf='tmp3'
-
 def scbridge(transtype, inf, cwd, outf):
     intype, outtype = transtype.split('to')
     getSyncLog("Find files at {0}".format(inf))
