@@ -15,7 +15,6 @@ import re
 def getSyncLog(infoStr):
     os.system('echo "[%s] %s"' % (time.strftime('%H:%M:%S'), infoStr))
 
-sample = "rawdata/h5/GSM3489182_Donor_01_raw_gene_bc_matrices_h5.h5"
 def load_data(sample):
     adata = sc.read_10x_h5(sample)
     adata.var_names_make_unique()
