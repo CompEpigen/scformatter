@@ -18,6 +18,9 @@ def getSyncLog(infoStr):
 def load_data(sample):
     adata = sc.read_10x_h5(sample)
     adata.var_names_make_unique()
+    return adata
+
+def sc_analysis(adata):
     sc.pp.filter_cells(adata, min_genes=200)
     sc.pp.filter_genes(adata, min_cells=3)
     adata.var['mt'] = adata.var_names.str.startswith('MT-')  # annotate the group of mitochondrial genes as 'mt'
@@ -73,12 +76,14 @@ def main():
                     getSyncLog('Transforming data format for each file...')
                     print(os.path.join(inf, f))
                     eachadata = load_data(os.path.join(inf, f))
+                    eachadata = sc_analysis(eachadata)
                     f = re.sub(r'\.[hH]5', '', f)
                     eachadata.write(os.path.join(outf, ''.join([name, '_', f, '.h5ad'])))
         if not each:
             getSyncLog('Integrating all files and transforming data format...')
             adatas = [load_data(filename) for filename in infiles]
             adata = adatas[0].concatenate(adatas[1:])
+            adata = sc_analysis(adata)
             adata.write(os.path.join(outf, ''.join([name, '.h5ad'])))
             getSyncLog('Finished. Please find the output at {0}'.format(os.path.join(outf, ''.join([name, '.h5ad']))))
                 
