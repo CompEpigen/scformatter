@@ -28,5 +28,5 @@ python scbridge.py -h
 ```
 Testing command:
 ```
-python scbridge.py -t S3toH5AD -i test/input/ -o test/output/
+python scbridge.py -t S3toH5AD -i test/input/ 
 ```
