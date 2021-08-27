@@ -26,9 +26,7 @@ conda activate snakemake
 ```
 python scbridge.py -h
 ```
+Testing command:
 ```
-  -h, --help         show this help message and exit
-  -t TRANSFORM_TYPE  Please select from ['S3toH5AD', 'S2toS3', 'H5toH5AD']
-  -i INPUT_FOLDER    input_folder
-  -o OUTPUT_FOLDER   output_folder
+python scbridge.py -t S3toH5AD -i test/input/ -o test/output/
 ```
