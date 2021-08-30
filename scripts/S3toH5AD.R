@@ -15,7 +15,7 @@ move <- function(from, to) {
   file.rename(from = from,  to = to)
 }
 
-in.files <- list.files(args[1], pattern = ".rds")
+in.files <- list.files(args[1], pattern = ".rds", ignore.case=T)
 
 i=1
 for (i in 1:length(x = in.files)) {
