@@ -29,7 +29,7 @@ rawdata/h5
 |-- GSM3489182_Donor_01_raw_gene_bc_matrices_h5.h5
 `-- GSM3489185_Donor_02_raw_gene_bc_matrices_h5.h5
 ```
-#### File format extention
+File format extention
 * `.rds` for seurat S3 object
 * `.h5` for 10X H5 file
 * `.h5ad` for scanpy anndata object 
