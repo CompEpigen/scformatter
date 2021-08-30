@@ -25,7 +25,7 @@ conda activate snakemake
 ## Input files
 Put your files under one folder with a proper file name extention. For example,
 ```
-rawdata/h5
+test/rawdata/h5
 |-- GSM3489182_Donor_01_raw_gene_bc_matrices_h5.h5
 `-- GSM3489185_Donor_02_raw_gene_bc_matrices_h5.h5
 ```
