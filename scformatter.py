@@ -13,7 +13,7 @@ def getSyncLog(infoStr):
     os.system('echo "[%s] %s"' % (time.strftime('%H:%M:%S'), infoStr))
 
 
-def scbridge(transtype, inf, cwd, outf):
+def scformatter(transtype, inf, cwd, outf):
     intype, outtype = transtype.split('to')
     inpath, outpath = ["{0}/rawdata/{1}".format(cwd, FORMATMAP[intype]),"{0}/procdata/{1}".format(cwd, FORMATMAP[outtype])]
 
@@ -66,7 +66,7 @@ def main():
             getSyncLog("User did not specfify output folder. The output files will be generated at {0}/procdata".format(cwd))
             outf = cwd
 
-        scbridge(trans, inf, cwd, outf) 
+        scformatter(trans, inf, cwd, outf) 
         
     except KeyboardInterrupt:
         sys.stderr.write("User interrupted me!\n")
