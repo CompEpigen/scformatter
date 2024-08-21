@@ -1,5 +1,5 @@
-# SCBridge
-SCBridge uses singularity and snakemake workflow to handle interoperability between Seurat, SingleCellExperiment, and Scanpy anndata.
+# SCFormatter
+SCFormatter uses singularity and snakemake workflow to handle interoperability between Seurat, SingleCellExperiment, and Scanpy anndata.
 
 # Installation
 ## Prerequisites
@@ -11,7 +11,7 @@ In ODCF clusters (e.g. worker01), singularity was installed. As for snakemake, y
 
 ## Create snakemake enviroment if using conda
 ```
-cd scbridge
+cd scformatter
 conda env create -f snakemake.yml
 ```
 
@@ -36,9 +36,9 @@ Filename extension (Case insensitive)
 
 ## Run SCBridge
 ```
-python scbridge.py -h
+python scformatter.py -h
 ```
 Testing command:
 ```
-python scbridge.py -t S3toH5AD -i test/input/seurat3 
+python scformatter.py -t S3toH5AD -i test/input/seurat3 
 ```
